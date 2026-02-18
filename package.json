@@ -1,0 +1,30 @@
+{
+  "name": "x-recon",
+  "version": "1.0.0",
+  "description": "MCP server for X platform search, raw post fetching, and bookmark access",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "x-recon": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "authorize": "node dist/auth/authorize.js",
+    "doctor:x": "node dist/cli/doctor-x.js",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "@xdevplatform/xdk": "^0.4.0",
+    "better-sqlite3": "^12.6.2",
+    "zod": "^3.23"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22",
+    "typescript": "^5.5",
+    "vitest": "^2.0"
+  }
+}
