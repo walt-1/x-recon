@@ -19,6 +19,8 @@ import { syncBookmarksSchema, syncBookmarks } from './tools/sync-bookmarks.js';
 import { ingestPostsSchema, ingestPosts } from './tools/ingest-posts.js';
 import { getPostsByTagSchema, getPostsByTagHandler } from './tools/get-posts-by-tag.js';
 import { searchLocalSchema, searchLocal } from './tools/search-local.js';
+import { listLocalContentSchema, listLocalContent } from './tools/list-local-content.js';
+import { hydrateArticlesSchema, hydrateArticles } from './tools/hydrate-articles.js';
 import { listTagsSchema, listTags } from './tools/list-tags.js';
 import { tagPostsSchema, tagPostsHandler } from './tools/tag-posts.js';
 
@@ -222,11 +224,37 @@ async function main() {
 
   server.tool(
     'search_local',
-    'Full-text search across locally stored posts. Optionally filter by tag. Zero API cost.',
+    'Full-text search across locally stored posts and article content with token-safe snippets. Zero API cost.',
     searchLocalSchema,
     async (params) => {
       try {
         return toolResult(await searchLocal(params));
+      } catch (err) {
+        return toolError(err);
+      }
+    },
+  );
+
+  server.tool(
+    'list_local_content',
+    'List local posts/articles with pagination, filters, and optional full content.',
+    listLocalContentSchema,
+    async (params) => {
+      try {
+        return toolResult(await listLocalContent(params));
+      } catch (err) {
+        return toolError(err);
+      }
+    },
+  );
+
+  server.tool(
+    'hydrate_articles',
+    'Hydrate missing or partial article content in local storage with retry/backfill support.',
+    hydrateArticlesSchema,
+    async (params) => {
+      try {
+        return toolResult(await hydrateArticles(params));
       } catch (err) {
         return toolError(err);
       }

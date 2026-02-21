@@ -94,3 +94,65 @@ export interface StoredPost extends XPost {
   source: string;
   tags: string[];
 }
+
+export const CONTENT_STATUS_VALUES = [
+  'new',
+  'pending',
+  'fetching',
+  'hydrated',
+  'partial',
+  'failed',
+  'missing',
+  'stale',
+] as const;
+
+export type ContentStatus = (typeof CONTENT_STATUS_VALUES)[number];
+
+export const CONTENT_SOURCE_VALUES = ['article', 'note_tweet', 'tweet', 'unknown'] as const;
+
+export type ContentSource = (typeof CONTENT_SOURCE_VALUES)[number];
+
+export interface LocalContentItem {
+  id: string;
+  type: string;
+  author_handle: string;
+  author_name: string | null;
+  created_at: string;
+  source_url: string | null;
+  source: string | null;
+  article_title: string | null;
+  content_status: ContentStatus;
+  content_source: ContentSource;
+  content_version: number;
+  content_fetched_at: string | null;
+  snippet: string;
+  content_text?: string;
+  tags: string[];
+}
+
+export interface LocalContentListResult {
+  data: LocalContentItem[];
+  cursor?: string;
+  has_more: boolean;
+  truncated?: boolean;
+}
+
+export interface HydrationRowResult {
+  id: string;
+  old_status: ContentStatus;
+  new_status: ContentStatus;
+  content_version: number;
+  error_code?: string;
+}
+
+export interface HydrationRunResult {
+  processed: number;
+  hydrated: number;
+  partial: number;
+  failed: number;
+  missing: number;
+  skipped: number;
+  dry_run: boolean;
+  rows: HydrationRowResult[];
+  backfill_cursor?: string;
+}

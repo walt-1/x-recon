@@ -92,6 +92,9 @@ src/
 
 ## Environment Variables
 
+- If `.env` uses 1Password references (`op://...`), run commands with `op run --env-file=".env" -- <command>` so values resolve at runtime.
+- Do not rely on `source .env` for `op://...` entries; that leaves literal references and can cause auth failures.
+
 Required:
 - `XAI_API_KEY` — xAI API key for Grok semantic search + auto-tagging
 - `X_API_BEARER_TOKEN` — X API Bearer Token (public data)
