@@ -87,6 +87,16 @@ export interface SyncResult {
   new_posts: number;
   tags_applied: number;
   pages_fetched: number;
+  stop_reason?: 'overlap' | 'date_cutoff' | 'max_pages' | 'no_more_pages';
+  overlap_detected?: boolean;
+  cutoff_reached?: boolean;
+  first_synced_timestamp?: string;
+  last_synced_timestamp?: string;
+  referenced_candidates: number;
+  referenced_existing: number;
+  referenced_fetched: number;
+  referenced_inserted: number;
+  referenced_failed: number;
 }
 
 export interface StoredPost extends XPost {

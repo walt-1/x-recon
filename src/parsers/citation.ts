@@ -37,3 +37,22 @@ function matchTweetId(input: string): string | null {
 
   return null;
 }
+
+const TWEET_URL_IN_TEXT_RE = /(?:x\.com|twitter\.com)\/(?:i|[a-zA-Z0-9_]+)\/status\/(\d+)/g;
+
+export function extractTweetIdsFromUrls(urls: string[]): string[] {
+  const ids = new Set<string>();
+  for (const url of urls) {
+    const id = matchTweetId(url);
+    if (id) ids.add(id);
+  }
+  return Array.from(ids);
+}
+
+export function extractTweetIdsFromText(text: string): string[] {
+  const ids = new Set<string>();
+  for (const match of text.matchAll(TWEET_URL_IN_TEXT_RE)) {
+    ids.add(match[1]);
+  }
+  return Array.from(ids);
+}

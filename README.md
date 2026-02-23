@@ -314,13 +314,33 @@ These tools store and query posts locally in SQLite. Queries are free — no API
 
 #### `sync_bookmarks` — Sync Bookmarks to Local KB (OAuth required)
 
-Fetches bookmarks from X, stores them locally, and auto-tags by topic.
+Fetches bookmarks from X, stores them locally, auto-tags by topic, and hydrates referenced posts (quotes, replies, embedded URLs).
+
+**Smart sync** stops early when overlap with already-ingested bookmarks is detected (default behavior). Use `force_full_scan` to bypass.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `max_pages` | `number` (1-50) | `5` | Pages to sync (20 bookmarks per page) |
 | `auto_tag` | `boolean` | `true` | Auto-classify posts using Grok (~$0.005 per 20 posts) |
 | `tags` | `string[]` | — | Manually apply these tags to all synced bookmarks |
+| `stop_on_overlap` | `boolean` | `true` | Stop when overlap with existing posts is detected |
+| `stop_before` | `string` (ISO 8601) | — | Stop when page contains posts older than this date |
+| `force_full_scan` | `boolean` | `false` | Bypass smart stopping; fetch until `max_pages` or API exhausted |
+
+**Reference expansion**: Quoted tweets, replies, and embedded tweet URLs found in bookmarks are automatically fetched and stored as separate rows with source `bookmark_ref`. Hydrated refs are not auto-tagged.
+
+**Examples**:
+
+```json
+// Sync only new bookmarks (default smart stop)
+{ "max_pages": 10, "auto_tag": true }
+
+// Backfill until December 2025
+{ "max_pages": 50, "auto_tag": true, "stop_before": "2025-12-01T00:00:00Z" }
+
+// Force full scan (no early stop)
+{ "max_pages": 50, "auto_tag": false, "force_full_scan": true }
+```
 
 ---
 

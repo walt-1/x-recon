@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { extractTweetIds, extractTweetId } from '../../parsers/citation.js';
+import { extractTweetIds, extractTweetId, extractTweetIdsFromUrls, extractTweetIdsFromText } from '../../parsers/citation.js';
 
 describe('extractTweetIds', () => {
   it('extracts IDs from x.com URLs', () => {
@@ -104,5 +104,48 @@ describe('extractTweetId', () => {
 
   it('handles URL with query parameters', () => {
     expect(extractTweetId('https://x.com/user/status/12345?s=20')).toBe('12345');
+  });
+});
+
+describe('extractTweetIdsFromUrls', () => {
+  it('extracts IDs from an array of URLs', () => {
+    const urls = [
+      'https://x.com/user1/status/111',
+      'https://example.com/not-a-tweet',
+      'https://twitter.com/user2/status/222',
+    ];
+    expect(extractTweetIdsFromUrls(urls)).toEqual(['111', '222']);
+  });
+
+  it('deduplicates IDs', () => {
+    const urls = [
+      'https://x.com/a/status/111',
+      'https://x.com/b/status/111',
+    ];
+    expect(extractTweetIdsFromUrls(urls)).toEqual(['111']);
+  });
+
+  it('returns empty array for empty input', () => {
+    expect(extractTweetIdsFromUrls([])).toEqual([]);
+  });
+});
+
+describe('extractTweetIdsFromText', () => {
+  it('extracts tweet IDs embedded in free text', () => {
+    const text = 'Check out https://x.com/user/status/12345 and also https://twitter.com/other/status/67890 for context.';
+    expect(extractTweetIdsFromText(text)).toEqual(['12345', '67890']);
+  });
+
+  it('deduplicates IDs in text', () => {
+    const text = 'See https://x.com/a/status/111 and https://x.com/b/status/111';
+    expect(extractTweetIdsFromText(text)).toEqual(['111']);
+  });
+
+  it('returns empty array when no tweet URLs found', () => {
+    expect(extractTweetIdsFromText('No URLs here at all')).toEqual([]);
+  });
+
+  it('handles text with only non-tweet URLs', () => {
+    expect(extractTweetIdsFromText('Visit https://example.com for more info')).toEqual([]);
   });
 });
