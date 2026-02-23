@@ -419,6 +419,14 @@ export function getPostsByIds(ids: string[]): XPost[] {
   return rows.map((row) => JSON.parse(row.raw_json));
 }
 
+export function getExistingPostIds(ids: string[]): Set<string> {
+  if (ids.length === 0) return new Set();
+  const db = getDb();
+  const placeholders = ids.map(() => '?').join(',');
+  const rows = db.prepare(`SELECT id FROM posts WHERE id IN (${placeholders})`).all(...ids) as Array<{ id: string }>;
+  return new Set(rows.map((row) => row.id));
+}
+
 export function getPostsByTag(tag: string, limit = 100): XPost[] {
   const db = getDb();
   const rows = db

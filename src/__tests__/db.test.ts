@@ -8,6 +8,7 @@ import {
   upsertPosts,
   getPostById,
   getPostsByIds,
+  getExistingPostIds,
   tagPost,
   tagPosts,
   untagPost,
@@ -309,6 +310,36 @@ describe('db', () => {
       const results = getPostsByIds(['1', 'nonexistent']);
       expect(results).toHaveLength(1);
       expect(results[0].id).toBe('1');
+    });
+  });
+
+  // --- getExistingPostIds ---
+
+  describe('getExistingPostIds', () => {
+    it('returns empty set for empty input', () => {
+      expect(getExistingPostIds([])).toEqual(new Set());
+    });
+
+    it('returns only IDs that exist in the DB', () => {
+      upsertPost(makePost({ id: '1' }), 'test');
+      upsertPost(makePost({ id: '3' }), 'test');
+
+      const result = getExistingPostIds(['1', '2', '3', '4']);
+      expect(result).toEqual(new Set(['1', '3']));
+    });
+
+    it('handles duplicate input IDs', () => {
+      upsertPost(makePost({ id: '1' }), 'test');
+
+      const result = getExistingPostIds(['1', '1', '1']);
+      expect(result).toEqual(new Set(['1']));
+    });
+
+    it('returns empty set when no IDs match', () => {
+      upsertPost(makePost({ id: '1' }), 'test');
+
+      const result = getExistingPostIds(['99', '100']);
+      expect(result).toEqual(new Set());
     });
   });
 
