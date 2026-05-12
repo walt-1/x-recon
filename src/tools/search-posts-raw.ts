@@ -4,7 +4,7 @@ import type { PaginatedResponse, XPost } from '../types.js';
 
 export const searchPostsRawSchema = {
   query: z.string().describe('Search query (supports Twitter search operators: from:, to:, #, exact phrases in quotes)'),
-  max_results: z.number().min(1).max(50).default(20),
+  max_results: z.number().min(10).max(50).default(20),
   mode: z.enum(['latest', 'top']).default('latest').describe('Sort by recency or engagement'),
 };
 

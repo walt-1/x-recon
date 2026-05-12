@@ -110,7 +110,7 @@ export async function runDoctorX(): Promise<DoctorReport> {
   };
 
   try {
-    await searchRecent('solana', 1, 'recency');
+    await searchRecent('solana', 10, 'recency');
     report.checks.x_api_search_auth = ok('Search auth probe succeeded via searchRecent.');
   } catch (err) {
     report.checks.x_api_search_auth = classifyProbeError(err);

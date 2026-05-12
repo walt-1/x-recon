@@ -7,7 +7,7 @@ vi.mock('../../clients/x-api.js', () => ({
   searchRecent: (...args: any[]) => mockSearchRecent(...args),
 }));
 
-import { searchPostsRaw } from '../../tools/search-posts-raw.js';
+import { searchPostsRaw, searchPostsRawSchema } from '../../tools/search-posts-raw.js';
 
 function makePost(overrides: Partial<XPost> = {}): XPost {
   return {
@@ -75,5 +75,10 @@ describe('searchPostsRaw', () => {
     const result = await searchPostsRaw({ query: 'test', max_results: 10, mode: 'latest' });
     expect(result.cursor).toBe('next-token-abc');
     expect(result.has_more).toBe(true);
+  });
+
+  it('rejects max_results below X API recent search minimum', () => {
+    const result = searchPostsRawSchema.max_results.safeParse(9);
+    expect(result.success).toBe(false);
   });
 });

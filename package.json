@@ -10,9 +10,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "start": "node dist/index.js",
-    "authorize": "node dist/auth/authorize.js",
-    "doctor:x": "node dist/cli/doctor-x.js",
+    "start": "node --env-file-if-exists=.env dist/index.js",
+    "authorize": "node --env-file-if-exists=.env dist/auth/authorize.js",
+    "doctor:x": "node --env-file-if-exists=.env dist/cli/doctor-x.js",
     "test": "vitest"
   },
   "dependencies": {
